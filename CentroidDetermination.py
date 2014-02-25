@@ -37,13 +37,15 @@ def predetermine_centroids(x):
         for i in range(b):
             for j in range(len(betas)):
                 idx = int(math.ceil((betas[j][i]+betas[j][i+1])/2))
-                pprint(num)
-                pprint(i)
-                pprint(j)
-                pprint(idx)
-                pprint(x)
-                pprint(centroids)
-                centroids[num][i].append(x[j][idx])
+                try:
+                    centroids[num][i].append(x[j][idx])
+                except:
+                    pprint(num)
+                    pprint(i)
+                    pprint(j)
+                    pprint(idx)
+                    pprint(x)
+                    pprint(centroids)
         # plt.show()
         # pprint(centroids)
     return centroids
