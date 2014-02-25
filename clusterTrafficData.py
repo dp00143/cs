@@ -16,7 +16,7 @@ logger = 0
 
 def init(name):
     global logger
-    logging.basicConfig(filename="log/"+name+".log",filemode='ab')
+    logging.basicConfig(filename="log/"+name+".log",filemode='wb')
     logger = logging.getLogger(__name__)
     #setup connection and declare channel
     connection = pika.BlockingConnection(pika.ConnectionParameters(host="127.0.0.1"))
