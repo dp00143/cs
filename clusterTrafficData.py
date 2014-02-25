@@ -135,6 +135,8 @@ def callback(ch, method, properties, body):
         if clusterResult == 0:
             # Some bug which can only be reproduced at random causes clusterResult to become 0
             # Ugly hack: just ignore and hope system recovers...
+            while(clusterResult == 0):
+                clusterResult = recalculated_clustering(centroidinp, k)
             return
         # logger.info(m)
         # logger.info(lastm)
