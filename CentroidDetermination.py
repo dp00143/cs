@@ -1,6 +1,7 @@
 __author__ = 'Daniel'
 import math
 import sys
+from pprint import pprint
 
 from scipy.stats import kde
 import numpy as np
