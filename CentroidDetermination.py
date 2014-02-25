@@ -62,7 +62,7 @@ def find_beta(quantile, pdf):
     i = 0
     s= 0
     # print quantile
-    while(quantile > s):
+    while(quantile > s and i < len(pdf)):
         s += pdf[i]
         i += 1
     # print "Summe %f, Index %i" %(s,i)
