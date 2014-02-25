@@ -33,7 +33,7 @@ def init(name):
     return channel
 
 
-initialPacketsize = 100
+initialPacketsize = 1000
 packetsize = 10
 centroidinp = [[],[]]
 means = False
@@ -48,7 +48,7 @@ metaDataStore = RingBuffer(5000)
 
 #Denotes the number of steps after which recalculation of k takes place
 m = 0
-maxm = 10
+maxm = 500
 
 #save the chosen k
 k = 0
