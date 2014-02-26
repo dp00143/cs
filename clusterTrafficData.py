@@ -23,7 +23,7 @@ def init(name):
     channel = connection.channel()
     channel.queue_declare(queue=name)
 
-    initialize logging
+    #initialize logging
     logger.setLevel(logging.DEBUG)
     ch = logging.StreamHandler()
     ch.setLevel(logging.DEBUG)
