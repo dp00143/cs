@@ -41,12 +41,12 @@ def predetermine_centroids(x):
                 try:
                     centroids[num][i].append(x[j][idx])
                 except:
-                    pprint(num)
-                    pprint(i)
-                    pprint(j)
+#                    pprint(num)
+#                    pprint(i)
+#                    pprint(j)
                     pprint(idx)
-                    pprint(x)
-                    pprint(centroids)
+#                    pprint(x)
+#                    pprint(centroids)
         # plt.show()
         # pprint(centroids)
     return centroids
