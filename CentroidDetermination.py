@@ -43,7 +43,7 @@ def predetermine_centroids(x):
                 except:
 #                    pprint(num)
 #                    pprint(i)
-#                    pprint(j)
+                    pprint(betas)
                     pprint(idx)
 #                    pprint(x)
 #                    pprint(centroids)
