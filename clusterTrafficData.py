@@ -207,8 +207,8 @@ def info(msg):
 
 def clusterData():
     global logger
-    logger.info("Started main program, waiting for data...")
     channel = init('traffic')
+    logger.info("Started main program, waiting for data...")
     with open('trafficData.csv', 'ab') as csvfile:
         wr = csv.writer(csvfile, delimiter=',', quotechar='\"', quoting=csv.QUOTE_MINIMAL)
         wr.writerow(["Average Speed", "Vehicle Count", "Timestamp", "Street", "Nearest Centroid"])
