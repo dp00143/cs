@@ -116,6 +116,7 @@ def fakeStreet():
         return streets[4]
 def callback(ch, method, properties, body):
     global centroidinp, means, clusterResult, m, k, logger, datetimeFormat
+    print "retrieved data"
     if m > maxm:
         lastm = m
         m = 0
