@@ -23,18 +23,17 @@ def init(name):
     channel = connection.channel()
     channel.queue_declare(queue=name)
 
-    #initialize logging
-    #logger.setLevel(logging.DEBUG)
-    #ch = logging.StreamHandler()
-    #ch.setLevel(logging.DEBUG)
-    #formatter = logging.Formatter('%(asctime)s %(message)s')
-    
-    #ch.setFormatter(formatter)
-    #logger.addHandler(ch)
+    initialize logging
+    logger.setLevel(logging.DEBUG)
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s %(message)s')
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
     return channel
 
 
-initialPacketsize = 1000
+initialPacketsize = 100
 packetsize = 10
 centroidinp = [[],[]]
 means = False
@@ -89,9 +88,9 @@ def initial_clustering(inp):
     clustering = [c["cluster"] for c in result]
     silhoutteCoefficients = [silhoutteCoefficient(c1) for c1 in clustering]
     clustersizes = [[len(c) for c in c1] for c1 in clustering]
-    info("Silhoutte metric after initial clustering:")
-    info(pformat(clustersizes))
-    info(pformat(silhoutteCoefficients))
+    logger.info("Silhoutte metric after initial clustering:")
+    logger.info(pformat(clustersizes))
+    logger.info(pformat(silhoutteCoefficients))
     mins = sys.maxsize
     for i, s in enumerate(silhoutteCoefficients):
         smean = 0
@@ -131,7 +130,7 @@ def callback(ch, method, properties, body):
         for x in clusterDataStore.get():
             for i, v in enumerate(x):
                 centroidinp[i].append(v)
-        info("Recalcalibrating Centroids...")
+        logger.info("Recalcalibrating Centroids...")
         clusterResult = recalculated_clustering(centroidinp, k)
         if clusterResult == 0:
             # Some bug which can only be reproduced at random causes clusterResult to become 0
@@ -139,14 +138,14 @@ def callback(ch, method, properties, body):
             while(clusterResult == 0):
                 clusterResult = recalculated_clustering(centroidinp, k)
             return
-        # info(m)
-        # info(lastm)
-        # info("New Centroids. Last m %i, new m $i" % (lastm, m))
+        # logger.info(m)
+        # logger.info(lastm)
+        # logger.info("New Centroids. Last m %i, new m $i" % (lastm, m))
         means = [{'Average Speed': x[0], 'Vehicle Count': x[1]} for x in clusterResult['means']]
-        info(pformat(means))
+        logger.info(pformat(means))
         clustersizes = [len(c) for c in clusterResult['cluster']]
         hitBucket = "n/a"
-        info(pformat(clustersizes))
+        logger.info(pformat(clustersizes))
         writeToCsv(newValue, metaData, hitBucket)
         return
     if not means:
@@ -166,14 +165,14 @@ def callback(ch, method, properties, body):
         else:
             clusterResult = initial_clustering(centroidinp)
             k = len(clusterResult["means"])
-            info("Results after initial clustering:")
-            info("Cluster:")
+            logger.info("Results after initial clustering:")
+            logger.info("Cluster:")
             clustersizes = [len(c) for c in clusterResult['cluster']]
-            info(pformat(clustersizes))
-            info(pformat(clustersizes))
+            logger.info(pformat(clustersizes))
+            logger.info(pformat(clustersizes))
             means = [{'Average Speed': x[0], 'Vehicle Count': x[1]} for x in clusterResult['means']]
-            info("Centroids:")
-            info(pformat(means))
+            logger.info("Centroids:")
+            logger.info(pformat(means))
     else:
         m += 1
         body = json.loads(body)
@@ -187,12 +186,12 @@ def callback(ch, method, properties, body):
         weights = [1 for i in range(features)]
         clusterResult = kmeans_new_value(clusterResult['means'], clusterResult['cluster'], weights, features, newValue)
         means = [{'Average Speed': x[0], 'Vehicle Count': x[1]} for x in clusterResult['means']]
-        info("Centroids:")
-        info(pformat(means))
-        info("Cluster Step %i:" % m)
+        logger.info("Centroids:")
+        logger.info(pformat(means))
+        logger.info("Cluster Step %i:" % m)
         clustersizes = [len(c) for c in clusterResult['cluster']]
         hitBucket = clusterResult['hit_bucket']
-        info(pformat(clustersizes))
+        logger.info(pformat(clustersizes))
         writeToCsv(newValue, metaData, hitBucket)
         return
 
@@ -202,19 +201,19 @@ def writeToCsv(newValue, metaData, hitbucket):
         wr.writerow([newValue[0], newValue[1], metaData[0], metaData[1], hitbucket])
 
 def info(msg):
-    with open('trafficLog.csw', 'ab') as logfile:
-        wr = logfile.write(msg)
+    logfile = open('trafficLog.txt', 'ab')
+    logfile.write(msg)
 
 
 def clusterData():
     global logger
+    logger.info("Started main program, waiting for data...")
     channel = init('traffic')
     with open('trafficData.csv', 'ab') as csvfile:
         wr = csv.writer(csvfile, delimiter=',', quotechar='\"', quoting=csv.QUOTE_MINIMAL)
         wr.writerow(["Average Speed", "Vehicle Count", "Timestamp", "Street", "Nearest Centroid"])
     channel.basic_consume(callback, queue='traffic', no_ack=True)
     channel.start_consuming()
-    info("Started main program, waiting for data...")
 
 # main()
 
