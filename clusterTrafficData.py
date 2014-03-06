@@ -117,7 +117,7 @@ def callback(ch, method, properties, body):
     body = json.loads(body)
     currentTimeStamp = datetime.strptime(body["data"]["TIMESTAMP"], datetimeFormat)
     if not means:
-        if (currentTimeStamp-startdate) < timedelta(minutes=10):
+        if (currentTimeStamp-startdate) < timedelta(hours=24):
             centroidinp[0].append(body["data"]["avgSpeed"])
             centroidinp[1].append(body["data"]["vehicleCount"])
             newValue = [body["data"]["avgSpeed"], body["data"]["vehicleCount"]]
@@ -139,7 +139,7 @@ def callback(ch, method, properties, body):
             logger.info("Centroids:")
             logger.info(pformat(means))
             return
-    elif (currentTimeStamp-datesincerecalculation) > timedelta(minutes=recalculationtime):
+    elif (currentTimeStamp-datesincerecalculation) > timedelta(hours=recalculationtime):
         # Enough time has past to recalibrate
         datesincerecalculation = currentTimeStamp
         centroidinp = [[], []]
