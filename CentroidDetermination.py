@@ -17,7 +17,10 @@ def pdf_estimation(x):
     return density,xgrid,xarr
 
 #input data x. Possible number of centroids are computed as the number of turning points (see find_turning_points)
-def predetermine_centroids(x):
+def predetermine_centroids(input):
+    x = []
+    for arr in input:
+        x.append([float(v) for v in arr])
     density, xgrid, xarr = pdf_estimation(x)
     # rows = int(math.ceil(len(x)/2.))
     # fig, axs = plt.subplots(rows, 2)
