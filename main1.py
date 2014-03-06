@@ -4,9 +4,9 @@ import trafficDataImport
 import clusterTrafficData
 import threading
 
-ch1 = "traffic1"
+ch1 = "traffic2"
 t1 = threading.Thread(target=trafficDataImport.importAllData, args=(ch1,))
-t2 = threading.Thread(target=clusterTrafficData.clusterData, args=(ch1, 6))
+t2 = threading.Thread(target=clusterTrafficData.clusterData, args=(ch1, 3))
 
 
 print "starting t1"
