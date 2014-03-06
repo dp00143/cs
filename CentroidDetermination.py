@@ -8,6 +8,7 @@ import numpy as np
 
 
 def pdf_estimation(x):
+    x = [float(v) for v in x]
     density, xgrid, xarr = [], [], []
     for i in range(len(x)):
         density.append((kde.gaussian_kde(x[i])))
@@ -18,7 +19,6 @@ def pdf_estimation(x):
 #input data x. Possible number of centroids are computed as the number of turning points (see find_turning_points)
 def predetermine_centroids(x):
     density, xgrid, xarr = pdf_estimation(x)
-    pprint(x)
     # rows = int(math.ceil(len(x)/2.))
     # fig, axs = plt.subplots(rows, 2)
     centroid_nums = set()
