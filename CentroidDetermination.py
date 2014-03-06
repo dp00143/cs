@@ -8,7 +8,6 @@ import numpy as np
 
 
 def pdf_estimation(x):
-    x = [float(v) for v in x]
     density, xgrid, xarr = [], [], []
     for i in range(len(x)):
         density.append((kde.gaussian_kde(x[i])))
