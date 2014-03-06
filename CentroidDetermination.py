@@ -35,8 +35,6 @@ def predetermine_centroids(input):
         centroids.append(ci)
         betas = []
         for grid, d, xi in zip(xgrid, density, xarr):
-            pprint(d(grid))
-            return 0
             # ax.hist(xi, bins=10, normed=True)
             # ax.plot(grid, d(grid), 'r-')
             betas.append([find_beta(float(i)/float(b+2), d(grid)) for i in range(1,b+2)])
