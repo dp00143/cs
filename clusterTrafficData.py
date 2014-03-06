@@ -116,7 +116,30 @@ def callback(ch, method, properties, body):
     global centroidinp, means, clusterResult, k, logger, datetimeFormat, startdate, datesincerecalculation, recalculationtime
     body = json.loads(body)
     currentTimeStamp = datetime.strptime(body["data"]["TIMESTAMP"], datetimeFormat)
-    if (currentTimeStamp-datesincerecalculation) > timedelta(minutes=recalculationtime):
+    if not means:
+        if (currentTimeStamp-startdate) < timedelta(minutes=10):
+            centroidinp[0].append(body["data"]["avgSpeed"])
+            centroidinp[1].append(body["data"]["vehicleCount"])
+            newValue = [body["data"]["avgSpeed"], body["data"]["vehicleCount"]]
+            street = fakeStreet()
+            metaData = [currentTimeStamp, street]
+            hitBucket = "n/a"
+            writeToCsv(newValue, metaData, hitBucket)
+            # print "waiting for data %i" %len(centroidinp[0])
+            return
+        else:
+            clusterResult = initial_clustering(centroidinp)
+            k = len(clusterResult["means"])
+            logger.info("Results after initial clustering:")
+            logger.info("Cluster:")
+            clustersizes = [len(c) for c in clusterResult['cluster']]
+            logger.info(pformat(clustersizes))
+            logger.info(pformat(clustersizes))
+            means = [{'Average Speed': x[0], 'Vehicle Count': x[1]} for x in clusterResult['means']]
+            logger.info("Centroids:")
+            logger.info(pformat(means))
+            return
+    elif (currentTimeStamp-datesincerecalculation) > timedelta(minutes=recalculationtime):
         # Enough time has past to recalibrate
         datesincerecalculation = currentTimeStamp
         centroidinp = [[], []]
@@ -146,28 +169,6 @@ def callback(ch, method, properties, body):
         logger.info(pformat(clustersizes))
         writeToCsv(newValue, metaData, hitBucket)
         return
-    if not means:
-        if (currentTimeStamp-startdate) < timedelta(minutes=24):
-            centroidinp[0].append(body["data"]["avgSpeed"])
-            centroidinp[1].append(body["data"]["vehicleCount"])
-            newValue = [body["data"]["avgSpeed"], body["data"]["vehicleCount"]]
-            street = fakeStreet()
-            metaData = [currentTimeStamp, street]
-            hitBucket = "n/a"
-            writeToCsv(newValue, metaData, hitBucket)
-            # print "waiting for data %i" %len(centroidinp[0])
-            return
-        else:
-            clusterResult = initial_clustering(centroidinp)
-            k = len(clusterResult["means"])
-            logger.info("Results after initial clustering:")
-            logger.info("Cluster:")
-            clustersizes = [len(c) for c in clusterResult['cluster']]
-            logger.info(pformat(clustersizes))
-            logger.info(pformat(clustersizes))
-            means = [{'Average Speed': x[0], 'Vehicle Count': x[1]} for x in clusterResult['means']]
-            logger.info("Centroids:")
-            logger.info(pformat(means))
     else:
         newValue = [body["data"]["avgSpeed"], body["data"]["vehicleCount"]]
         clusterDataStore.append(newValue)
