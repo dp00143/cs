@@ -18,6 +18,8 @@ def pdf_estimation(x):
 #input data x. Possible number of centroids are computed as the number of turning points (see find_turning_points)
 def predetermine_centroids(x):
     density, xgrid, xarr = pdf_estimation(x)
+    pprint(density)
+    return 0
     # rows = int(math.ceil(len(x)/2.))
     # fig, axs = plt.subplots(rows, 2)
     centroid_nums = set()
@@ -65,12 +67,12 @@ def recalculate_centroids(x, k):
 
 def find_beta(quantile, pdf):
     norm_constant = sum(pdf)
-    if norm_constant == 0:
-        pprint("pdf:")
-        pprint(pdf)
-        pprint("quantile:")
-        pprint(quantile)
-        return 0
+    #if norm_constant == 0:
+    #    pprint("pdf:")
+    #    pprint(pdf)
+    #    pprint("quantile:")
+    #    pprint(quantile)
+    #    return 0
     # normalize values so they are between 0 and 1
     pdf = [float(x)/float(norm_constant) for x in pdf]
     # print sum(pdf)
