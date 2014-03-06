@@ -37,16 +37,16 @@ def predetermine_centroids(x):
             betas.append([find_beta(float(i)/float(b+2), d(grid)) for i in range(1,b+2)])
         for i in range(b):
             for j in range(len(betas)):
-                idx = int(math.ceil((betas[j][i]+betas[j][i+1])/2))
-#                try:
-                centroids[num][i].append(x[j][idx])
-#                except:
-#                    pprint(num)
-#                    pprint(i)
-#                    pprint(betas)
-#                    pprint(idx)
-#                    pprint(x)
-#                    pprint(centroids)
+                idx = int(math.ceil(float((betas[j][i]+betas[j][i+1]))/float(2)))
+                try:
+                    centroids[num][i].append(x[j][idx])
+                except:
+                    pprint(num)
+                    pprint(i)
+                    pprint(j)
+                    pprint(idx)
+                    pprint(x)
+                    pprint(centroids)
         # plt.show()
         # pprint(centroids)
     return centroids
@@ -59,19 +59,19 @@ def recalculate_centroids(x, k):
         betas.append([find_beta(float(i)/float(k+2), d(grid)) for i in range(1, k+2)])
     for i in range(k):
         for j in range(len(betas)):
-            idx = int(math.ceil((betas[j][i+1])/2))
+            idx = int(math.ceil(float((betas[j][i+1]))/float(2)))
             centroids[i].append(x[j][idx])
     return centroids
 
 def find_beta(quantile, pdf):
     norm_constant = sum(pdf)
-    # print norm_constant
-    pdf = [x/norm_constant for x in pdf]
+    # normalize values so they are between 0 and 1
+    pdf = [float(x)/float(norm_constant) for x in pdf]
     # print sum(pdf)
     i = 0
-    s= 0
-    # print quantile
-    while(quantile > s and i < len(pdf)):
+    s = 0
+
+    while(quantile > s and i < len(pdf)-1):
         s += pdf[i]
         i += 1
     # print "Summe %f, Index %i" %(s,i)
@@ -81,8 +81,8 @@ def find_beta(quantile, pdf):
 #input: probability density function f
 #output: list of directions
 def find_turning_points(f):
-    delta_y = 0.001*max(f)
-    delta_x = 0.1*len(f)
+    delta_y = 0.001*float(max(f))
+    delta_x = 0.1*float(len(f))
     tp = []
     # print delta_x
     # last_x = 0
