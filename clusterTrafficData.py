@@ -116,6 +116,7 @@ def callback(ch, method, properties, body):
     global centroidinp, means, clusterResult, k, logger, datetimeFormat, startdate, datesincerecalculation, recalculationtime
     body = json.loads(body)
     currentTimeStamp = datetime.strptime(body["data"]["TIMESTAMP"], datetimeFormat)
+    logger.info(str(currentTimeStamp)+": new data received")
     if not means:
         if (currentTimeStamp-startdate) < timedelta(hours=24):
             centroidinp[0].append(body["data"]["avgSpeed"])
