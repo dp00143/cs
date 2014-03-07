@@ -40,7 +40,7 @@ def wrapAndSendInitialData(inp, msgTypes, connection, channelName):
         data["type"] = msgTypes
         data["data"] = arr
         jsonData = json.dumps(data)
-        channel.basic_publish(exchange='', routing_key='traffic', body=jsonData)
+        channel.basic_publish(exchange='', routing_key=channelName, body=jsonData)
     lastTimeStamp = datetime.strptime(data["data"]["TIMESTAMP"], datetimeFormat)
 
 def wrapAndSendData(inp, msgTypes, connection, channelName):
