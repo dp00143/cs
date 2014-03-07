@@ -57,7 +57,7 @@ def wrapAndSendData(inp, msgTypes, connection, channelName):
         currentTimeStamp = datetime.strptime(data["data"]["TIMESTAMP"], datetimeFormat)
         sentData = currentTimeStamp > lastTimeStamp
         if sentData:
-            channel.basic_publish(exchange='', routing_key='traffic', body=jsonData)
+            channel.basic_publish(exchange='', routing_key=channelName, body=jsonData)
     lastTimeStamp = datetime.strptime(data["data"]["TIMESTAMP"], datetimeFormat)
     return sentData
 
