@@ -1,4 +1,5 @@
 __author__ = 'Daniel'
+from httplib2.socks import HTTPError
 import urllib2
 import urllib
 import json
