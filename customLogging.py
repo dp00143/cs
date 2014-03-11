@@ -38,13 +38,13 @@ def writeToCsv(newValue, metaData, hitbucket):
     with open(channelname+'Data'+datetime.now().strftime("%Y-%m-%d")+'.csv', 'ab') as csvfile:
         wr = UnicodeWriter(csvfile)
         wr.writerow([str(newValue[0]), str(newValue[1]), metaData[0], metaData[1], metaData[2],
-                     metaData[3], metaData[4], metaData[5], metaData[6], metaData[7], hitbucket])
+                     metaData[3], metaData[4], metaData[5], metaData[6], metaData[7], str(hitbucket)])
 
 def info(msg):
     global channelname
     logname = channelname+'Log'+datetime.now().strftime("%Y-%m-%d")+".txt"
     logfile = open(logname, 'ab')
-    logfile.write(msg)
+    logfile.write(msg+"\n")
 
 def setChannelName(name):
     global channelname
