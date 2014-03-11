@@ -66,7 +66,13 @@ def importAllData(channelname):
     url = "http://ckan.projects.cavi.dk/api/action/datastore_search"
     resourceValues = "d7e6c54f-dc2a-4fae-9f2a-b036c804837d"
     resourceMetaData = "e132d528-a8a2-4e49-b828-f8f0bb687716"
-    values = importData(url, resourceValues)
+    while True:
+        try:
+            values = importData(url, resourceValues)
+            break
+        except HTTPError:
+            print "Could not retrieve data, try again"
+            sleep(300)
     trafficMetaData = importData(url, resourceMetaData)
     types = ['cluster']
     print "publish initial data of size %i" % len(values)
