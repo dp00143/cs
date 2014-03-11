@@ -94,14 +94,18 @@ def importAllData(channelname):
 def getMetaData(reportid):
     resource_id = "e132d528-a8a2-4e49-b828-f8f0bb687716"
     url = "http://ckan.projects.cavi.dk/api/action/datastore_search_sql?sql=select%20%22POINT_1_STREET%22," \
-          "%22POINT_1_CITY%22,%22POINT_2_STREET%22,%22POINT_2_CITY%22%20from%20%22" + resource_id + "%22%20where%20%22REPORT_ID%22=" \
+          "%22POINT_1_CITY%22,%22POINT_1_LAT%22,%22POINT_1_LNG%22,%22POINT_2_STREET%22,%22POINT_2_CITY%22," \
+          "%22POINT_2_LAT%22,%22POINT_2_LNG%22%20from%20%22" + resource_id + "%22%20where%20%22REPORT_ID%22=" \
           + str(reportid)
-    pprint(url)
+    # pprint(url)
     response = urllib2.urlopen(url)
     assert response.code == 200
     response_dict = json.loads(response.read())
     # assert response_dict[u'result'] is True
     result =response_dict[u'result']
-    meta_data = result[u"records"]
+    dict = result[u"records"][0]
+    meta_data = []
+    for k, v in dict.iteritems():
+        meta_data.append(v)
     return meta_data
 
