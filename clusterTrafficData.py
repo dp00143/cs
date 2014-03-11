@@ -107,7 +107,7 @@ def callback(ch, method, properties, body):
     report_id = body["data"]["REPORT_ID"]
     metaData = getMetaData(report_id)
     if not means:
-        if (currentTimeStamp-startdate) < timedelta(minutes=24):
+        if (currentTimeStamp-startdate) < timedelta(hours=24):
             centroidinp[0].append(body["data"]["avgSpeed"])
             centroidinp[1].append(body["data"]["vehicleCount"])
             newValue = [body["data"]["avgSpeed"], body["data"]["vehicleCount"]]
@@ -127,7 +127,7 @@ def callback(ch, method, properties, body):
             info("Centroids:")
             info(pformat(means))
             return
-    elif (currentTimeStamp-datesincerecalculation) > timedelta(minutes=recalculationtime):
+    elif (currentTimeStamp-datesincerecalculation) > timedelta(hours=recalculationtime):
         # Enough time has past to recalibrate
         datesincerecalculation = currentTimeStamp
         centroidinp = [[], []]
