@@ -1,5 +1,3 @@
-from random import random
-
 __author__ = 'Daniel'
 from KMeans import *
 from CentroidDetermination import *
