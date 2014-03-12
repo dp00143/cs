@@ -110,7 +110,7 @@ def callback(ch, method, properties, body):
             centroidinp[1].append(body["data"]["vehicleCount"])
             newValue = [body["data"]["avgSpeed"], body["data"]["vehicleCount"]]
             hitBucket = "n/a"
-            writeToCsv(newValue, metaData, hitBucket)
+            writeToCsv(newValue, currentTimeStamp, metaData, hitBucket)
             # print "waiting for data %i" %len(centroidinp[0])
             return
         else:
@@ -151,7 +151,7 @@ def callback(ch, method, properties, body):
         clustersizes = [len(c) for c in clusterResult['cluster']]
         hitBucket = "n/a"
         info(pformat(clustersizes))
-        writeToCsv(newValue, metaData, hitBucket)
+        writeToCsv(newValue, currentTimeStamp, metaData, hitBucket)
         return
     else:
         newValue = [body["data"]["avgSpeed"], body["data"]["vehicleCount"]]
@@ -166,7 +166,7 @@ def callback(ch, method, properties, body):
         clustersizes = [len(c) for c in clusterResult['cluster']]
         hitBucket = clusterResult['hit_bucket']
         info(pformat(clustersizes))
-        writeToCsv(newValue, metaData, hitBucket)
+        writeToCsv(newValue, currentTimeStamp, metaData, hitBucket)
         return
 
 
