@@ -52,5 +52,5 @@ def silhoutteCoefficient(C):
     info(pformat(s))
     info("Average Silhouette of entire Dataset: ")
     sed = total/totalLength
-    info(sed)
+    info(str(sed))
     return sed
