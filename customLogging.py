@@ -34,10 +34,10 @@ class UnicodeWriter:
         for row in rows:
             self.writerow(row)
 
-def writeToCsv(newValue, metaData, hitbucket):
+def writeToCsv(newValue, timestamp,metaData, hitbucket):
     with open(channelname+'Data'+datetime.now().strftime("%Y-%m-%d")+'.csv', 'ab') as csvfile:
         wr = UnicodeWriter(csvfile)
-        wr.writerow([str(newValue[0]), str(newValue[1]), metaData[0], metaData[1], metaData[2],
+        wr.writerow([str(newValue[0]), str(newValue[1]), str(timestamp),metaData[0], metaData[1], metaData[2],
                      metaData[3], metaData[4], metaData[5], metaData[6], metaData[7], str(hitbucket)])
 
 def info(msg):
