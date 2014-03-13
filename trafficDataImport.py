@@ -74,15 +74,16 @@ def importAllData(channelname):
         except HTTPError:
             print "Could not retrieve data, try again"
             sleep(300)
-    trafficMetaData = importData(url, resourceMetaData)
     types = ['cluster']
     print "publish initial data of size %i" % len(values)
     wrapAndSendInitialData(values, types, connection, channelname)
     #give the CKAN archive time to update data
     sleep(300)
     while True:
-        #fetch newest 10 samplesquit(9
-        values = importData(url, resourceValues,10)
+        try:
+            values = importData(url, resourceValues,500)
+        except:
+            continue
         if wrapAndSendData(values,types,connection,channelname):
             time = datetime.now()
             print str(time)+":published new data"
