@@ -111,9 +111,10 @@ def callback(ch, method, properties, body):
             newValue = [body["data"]["avgSpeed"], body["data"]["vehicleCount"]]
             hitBucket = "n/a"
             writeToCsv(newValue, currentTimeStamp, metaData, hitBucket)
-            # print "waiting for data %i" %len(centroidinp[0])
+            print "waiting for data %i" %len(centroidinp[0])
             return
         else:
+            print "initial clustering"
             clusterResult = initial_clustering(centroidinp)
             k = len(clusterResult["means"])
             info("Results after initial clustering:")
@@ -127,6 +128,7 @@ def callback(ch, method, properties, body):
             return
     elif (currentTimeStamp-datesincerecalculation) > timedelta(mins=recalculationtime):
         # Enough time has past to recalibrate
+        print "recalibration now"
         datesincerecalculation = currentTimeStamp
         centroidinp = [[], []]
         newValue = [body["data"]["avgSpeed"], body["data"]["vehicleCount"]]
