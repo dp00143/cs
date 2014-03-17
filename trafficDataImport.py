@@ -17,7 +17,7 @@ def establishConnection(hostname='127.0.0.1'):
 
 
 # ,"limit":2
-def importData(url, resource, limit=10000):
+def importData(url, resource, limit=100):
     data_string = urllib.quote(json.dumps({'resource_id': resource, 'limit': limit}))
     response = urllib2.urlopen(url, data_string)
     assert response.code == 200
