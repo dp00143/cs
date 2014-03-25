@@ -104,7 +104,6 @@ def initial_clustering(inp):
     pprint(idx)
     return result[idx]
 
-recalcsize =  100
 def callback(ch, method, properties, body):
     global centroidinp, means, clusterResult, k, logger, datetimeFormat, startdate, datesincerecalculation, recalculationtime, recalcsize
     body = json.loads(body)
@@ -112,14 +111,14 @@ def callback(ch, method, properties, body):
     report_id = body["data"]["REPORT_ID"]
     metaData = getMetaData(report_id)
     if not means:
-        if len(centroidinp[0]) < 30:
-        # if (currentTimeStamp-startdate) < timedelta(minutes=3):
+        #if len(centroidinp[0]) < 30:
+        if (currentTimeStamp-startdate) < timedelta(hours=24):
             centroidinp[0].append(body["data"]["avgSpeed"])
             centroidinp[1].append(body["data"]["vehicleCount"])
             newValue = [body["data"]["avgSpeed"], body["data"]["vehicleCount"]]
             hitBucket = "n/a"
             writeToCsv(newValue, currentTimeStamp, metaData, hitBucket)
-            print "waiting for data %i" % len(centroidinp[0])
+            #print "waiting for data %i" % len(centroidinp[0])
             return
         else:
             clusterResult = initial_clustering(centroidinp)
@@ -133,8 +132,8 @@ def callback(ch, method, properties, body):
             info("Centroids:")
             info(pformat(means))
             return
-    elif len(clusterDataStore) > recalcsize:
-    # elif (currentTimeStamp-datesincerecalculation) > timedelta(minutes=recalculationtime):
+    #elif len(clusterDataStore) > recalcsize:
+    elif (currentTimeStamp-datesincerecalculation) > timedelta(hours=recalculationtime):
         recalcsize += 100
         print "clustering data %i" % len(clusterDataStore)
         # Enough time has past to recalibrate
@@ -147,7 +146,7 @@ def callback(ch, method, properties, body):
             for i, v in enumerate(x):
                 centroidinp[i].append(v)
         info("Recalibrating Centroids...")
-        print "Recalibrating Centroids..."
+        #print "Recalibrating Centroids..."
         clusterResult = recalculated_clustering(centroidinp, k)
         if clusterResult == 0:
             # Some bug which can only be reproduced at random causes clusterResult to become 0
@@ -167,7 +166,7 @@ def callback(ch, method, properties, body):
         writeToCsv(newValue, currentTimeStamp, metaData, hitBucket)
         return
     else:
-        print "clustering data %i" % len(clusterDataStore)
+        #print "clustering data %i" % len(clusterDataStore)
         newValue = [body["data"]["avgSpeed"], body["data"]["vehicleCount"]]
         clusterDataStore.append(newValue)
         metaDataStore.append(metaData)
