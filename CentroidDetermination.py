@@ -54,7 +54,10 @@ def predetermine_centroids(input):
         # pprint(centroids)
     return centroids
 
-def recalculate_centroids(x, k):
+def recalculate_centroids(inp, k):
+    x = []
+    for arr in input:
+        x.append([float(v) for v in arr])
     density, xgrid, xarr = pdf_estimation(x)
     centroids = [[] for n in range(k)]
     betas = []
@@ -68,12 +71,12 @@ def recalculate_centroids(x, k):
 
 def find_beta(quantile, pdf):
     norm_constant = sum(pdf)
-    if norm_constant == 0:
-        pprint("pdf:")
-        pprint(pdf)
-        pprint("quantile:")
-        pprint(quantile)
-        return 0
+    #if norm_constant == 0:
+    #    pprint("pdf:")
+    #    pprint(pdf)
+    #    pprint("quantile:")
+    #    pprint(quantile)
+    #    return 0
     # normalize values so they are between 0 and 1
     pdf = [float(x)/float(norm_constant) for x in pdf]
     # print sum(pdf)
