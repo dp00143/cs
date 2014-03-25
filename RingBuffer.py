@@ -12,6 +12,8 @@ class RingBuffer:
             self.__class__ = RingBufferFull
     def get(self):
         return self.data
+    def __len__(self):
+        return len(self.data)
 
 class RingBufferFull:
     def __init__(self,n):
@@ -21,3 +23,5 @@ class RingBufferFull:
         self.cur = (self.cur+1) % self.max
     def get(self):
         return self.data[self.cur:]+self.data[:self.cur]
+    def __len__(self):
+        return self.max
