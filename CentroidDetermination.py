@@ -68,12 +68,12 @@ def recalculate_centroids(x, k):
 
 def find_beta(quantile, pdf):
     norm_constant = sum(pdf)
-    #if norm_constant == 0:
-    #    pprint("pdf:")
-    #    pprint(pdf)
-    #    pprint("quantile:")
-    #    pprint(quantile)
-    #    return 0
+    if norm_constant == 0:
+        pprint("pdf:")
+        pprint(pdf)
+        pprint("quantile:")
+        pprint(quantile)
+        return 0
     # normalize values so they are between 0 and 1
     pdf = [float(x)/float(norm_constant) for x in pdf]
     # print sum(pdf)
