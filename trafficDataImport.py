@@ -17,7 +17,7 @@ def establishConnection(hostname='127.0.0.1'):
 
 
 # ,"limit":2
-def importData(url, resource, limit=100):
+def importData(url, resource, limit=10000):
     data_string = urllib.quote(json.dumps({'resource_id': resource, 'limit': limit}))
     response = urllib2.urlopen(url, data_string)
     assert response.code == 200
@@ -30,43 +30,39 @@ def importData(url, resource, limit=100):
 
 lastTimeStamp = False
 datetimeFormat = '%Y-%m-%dT%H:%M:%S'
+programRunning = True
 
 #msgType store, forward or transform
-def wrapAndSendInitialData(inp, msgTypes, connection, channelName):
+def wrapAndSendInitialData(inp, msgTypes, connection):
     global lastTimeStamp
     channel = connection.channel()
-    channel.queue_declare(queue=channelName)
+    channel.exchange_declare(exchange='clustertraffic', type="fanout")
     for arr in inp:
-        data = {}
-        data["type"] = msgTypes
-        data["data"] = arr
+        data = {"type": msgTypes, "data": arr}
         jsonData = json.dumps(data)
-        channel.basic_publish(exchange='', routing_key=channelName, body=jsonData)
+        channel.basic_publish(exchange='clustertraffic', routing_key='', body=jsonData)
     lastTimeStamp = datetime.strptime(data["data"]["TIMESTAMP"], datetimeFormat)
 
-def wrapAndSendData(inp, msgTypes, connection, channelName):
+def wrapAndSendData(inp, msgTypes, connection):
     global lastTimeStamp
     channel = connection.channel()
-    channel.queue_declare(queue=channelName)
-    timestamp = str(datetime.now())
+    # channel.exchange_declare(exchange='clustertraffic', type="fanout")
     for arr in inp:
-        data = {}
-        data["type"] = msgTypes
-        data["data"] = arr
+        data = {"type": msgTypes, "data": arr}
         jsonData = json.dumps(data)
         #only publish if data is new
         currentTimeStamp = datetime.strptime(data["data"]["TIMESTAMP"], datetimeFormat)
         sentData = currentTimeStamp > lastTimeStamp
         if sentData:
-            channel.basic_publish(exchange='', routing_key=channelName, body=jsonData)
-    lastTimeStamp = datetime.strptime(data["data"]["TIMESTAMP"], datetimeFormat)
+            channel.basic_publish(exchange='clustertraffic', routing_key='', body=jsonData)
+            lastTimeStamp = datetime.strptime(data["data"]["TIMESTAMP"], datetimeFormat)
     return sentData
 
-def importAllData(channelname):
+def importAllData():
     connection = establishConnection()
     url = "http://ckan.projects.cavi.dk/api/action/datastore_search"
     resourceValues = "d7e6c54f-dc2a-4fae-9f2a-b036c804837d"
-    resourceMetaData = "e132d528-a8a2-4e49-b828-f8f0bb687716"
+    # resourceMetaData = "e132d528-a8a2-4e49-b828-f8f0bb687716"
     while True:
         try:
             values = importData(url, resourceValues)
@@ -76,18 +72,20 @@ def importAllData(channelname):
             sleep(300)
     types = ['cluster']
     print "publish initial data of size %i" % len(values)
-    wrapAndSendInitialData(values, types, connection, channelname)
+    wrapAndSendInitialData(values, types, connection)
     #give the CKAN archive time to update data
     sleep(300)
-    while True:
+    while programRunning:
         try:
             values = importData(url, resourceValues,500)
         except:
             continue
-        if wrapAndSendData(values,types,connection,channelname):
-            time = datetime.now()
+        time = datetime.now()
+        if wrapAndSendData(values,types,connection):
             print str(time)+":published new data"
         #give the CKAN archive time to update data
+        else:
+            print str(time)+"new data has not been published"
         sleep(300)
     connection.close()
     return
@@ -109,4 +107,9 @@ def getMetaData(reportid):
     for k, v in dict.iteritems():
         meta_data.append(v)
     return meta_data
+
+
+def shutDown():
+    global programRunning
+    programRunning = False
 
