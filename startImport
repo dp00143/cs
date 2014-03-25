@@ -1,0 +1,4 @@
+__author__ = 'Daniel'
+from trafficDataImport import importAllData
+
+importAllData()
