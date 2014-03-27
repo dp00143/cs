@@ -19,7 +19,7 @@ class UnicodeWriter:
         self.encoder = codecs.getincrementalencoder(encoding)()
 
     def writerow(self, row):
-        self.writer.writerow([s.encode("utf-8") if s is not None else '' for s in row])
+        self.writer.writerow([str(s) if isinstance(s,int) else s.encode("utf-8") if s is not None else '' for s in row])
         # Fetch UTF-8 output from the queue ...
         data = self.queue.getvalue()
         data = data.decode("utf-8")
@@ -35,14 +35,14 @@ class UnicodeWriter:
             self.writerow(row)
 
 def writeToCsv(newValue, timestamp,metaData, hitbucket):
-    with open(channelname+'Data'+datetime.now().strftime("%Y-%m-%d")+'.csv', 'ab') as csvfile:
+    with open(channelname+'Data'+timestamp.strftime("%Y-%m-%d")+'.csv', 'ab') as csvfile:
         wr = UnicodeWriter(csvfile)
         wr.writerow([str(newValue[0]), str(newValue[1]), str(timestamp),metaData[0], metaData[1], metaData[2],
                      metaData[3], metaData[4], metaData[5], metaData[6], metaData[7], str(hitbucket)])
 
-def info(msg):
+def info(timestamp, msg):
     global channelname
-    logname = channelname+'Log'+datetime.now().strftime("%Y-%m-%d")+".txt"
+    logname = channelname+'Log'+timestamp.strftime("%Y-%m-%d")+".txt"
     logfile = open(logname, 'ab')
     logfile.write(msg+"\n")
 
