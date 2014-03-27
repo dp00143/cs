@@ -47,7 +47,7 @@ def wrapAndSendData(inp, msgTypes, connection):
         data = {"type": msgTypes, "data": arr}
         jsonData = json.dumps(data)
         channel.basic_publish(exchange='clustertraffic', routing_key='', body=jsonData)
-    if data:
+    if data is not None:
         lastTimeStamp = datetime.strptime(data["data"]["TIMESTAMP"], datetimeFormat)
 
 
@@ -58,7 +58,7 @@ def importAllData():
     # resourceValues = "d7e6c54f-dc2a-4fae-9f2a-b036c804837d"
     resourceValues = "3c2200b6-3d8e-4707-9105-a755680f921a"
 
-    startdate = datetime.strptime('2014-02-13T07:10:00', datetimeFormat)
+    startdate = datetime.strptime('2014-02-13T08:20:00', datetimeFormat)
     enddate = datetime.strptime('2014-03-13T23:55:00', datetimeFormat)
     types = ['cluster']
     while startdate<enddate:
