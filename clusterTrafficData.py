@@ -109,7 +109,7 @@ def callback(ch, method, properties, body):
     body = json.loads(body)
     currentTimeStamp = datetime.strptime(body["data"]["TIMESTAMP"], datetimeFormat)
     report_id = body["data"]["REPORT_ID"]
-    while True
+    while True:
         try:
             metaData = getMetaData(report_id)
             break
