@@ -118,7 +118,7 @@ def callback(ch, method, properties, body):
             newValue = [body["data"]["avgSpeed"], body["data"]["vehicleCount"]]
             hitBucket = "n/a"
             writeToCsv(newValue, currentTimeStamp, metaData, hitBucket)
-            print "waiting for data %i" % len(centroidinp[0])
+            #print "waiting for data %i" % len(centroidinp[0])
             return
         else:
             datesincerecalculation = currentTimeStamp
@@ -136,7 +136,7 @@ def callback(ch, method, properties, body):
     #elif len(clusterDataStore) > recalcsize:
     elif (currentTimeStamp-datesincerecalculation) > timedelta(hours=recalculationtime):
         recalcsize += 100
-        print "clustering data %i" % len(clusterDataStore)
+        #print "clustering data %i" % len(clusterDataStore)
         # Enough time has past to recalibrate
         datesincerecalculation = currentTimeStamp
         centroidinp = [[], []]
@@ -167,7 +167,7 @@ def callback(ch, method, properties, body):
         writeToCsv(newValue, currentTimeStamp, metaData, hitBucket)
         return
     else:
-        print "clustering data %i" % len(clusterDataStore)
+        #print "clustering data %i" % len(clusterDataStore)
         newValue = [body["data"]["avgSpeed"], body["data"]["vehicleCount"]]
         clusterDataStore.append(newValue)
         metaDataStore.append(metaData)
