@@ -150,6 +150,6 @@ def find_turning_points(f):
     for i, t in enumerate(tp):
         if i > 0 and t == tp[i-1]:
             del_me.append(i)
-    for d in del_me:
+    for d in reversed(del_me):
         del tp[d]
     return tp
