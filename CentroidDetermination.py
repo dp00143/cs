@@ -26,11 +26,11 @@ def predetermine_centroids(inp):
     centroid_nums = set()
     for grid, d in zip(xgrid,density):
         tps = find_turning_points(d(grid))
-        centroid_nums.add(len(tps))
+        centroid_nums.add(len(tps))  
     # print "centroid number"
     # pprint(centroid_nums)
     centroids = []
-    for num, b in enumerate(centroid_nums):
+    for num, b in enumerate(range(min(centroid_nums),min(centroid_nums)+max(centroid_nums))):
         ci = [[] for n in range(b)]
         centroids.append(ci)
         betas = []
