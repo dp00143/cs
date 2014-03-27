@@ -43,6 +43,7 @@ def wrapAndSendData(inp, msgTypes, connection):
     global lastTimeStamp
     channel = connection.channel()
     channel.exchange_declare(exchange='clustertraffic', type="fanout")
+    data = None
     for arr in inp:
         data = {"type": msgTypes, "data": arr}
         jsonData = json.dumps(data)
