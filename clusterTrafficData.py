@@ -31,8 +31,8 @@ k = 0
 
 datetimeFormat = '%Y-%m-%dT%H:%M:%S'
 #Timestamps to know when initial centroid computation and the recalculations take place
-startdate = datetime.now()
-datesincerecalculation = datetime.now()
+startdate = datetime.strptime('2014-02-13T12:25:00', datetimeFormat)
+datesincerecalculation = datetime.strptime('2014-02-13T12:25:00', datetimeFormat)
 recalculationtime = 0
 
 
@@ -81,7 +81,7 @@ def recalculated_clustering(inp, k):
     return result
 
 
-def initial_clustering(inp):
+def initial_clustering(timestamp, inp):
     # global logger
     means = predetermine_centroids(inp)
     kmeansinput = transform(inp)
@@ -98,9 +98,9 @@ def initial_clustering(inp):
         if s > highestSil:
             highestSil = s
             idx = i
-    info("Clustersizes after initial Clustering:")
-    info(pformat(clustersizes))
-    info("Chosen k = %i" % len(clustering[idx]))
+    info(timestamp, "Clustersizes after initial Clustering:")
+    info(pformat(timestamp, clustersizes))
+    info(timestamp, "Chosen k = %i" % len(clustering[idx]))
     pprint(idx)
     return result[idx]
 
@@ -118,19 +118,20 @@ def callback(ch, method, properties, body):
             newValue = [body["data"]["avgSpeed"], body["data"]["vehicleCount"]]
             hitBucket = "n/a"
             writeToCsv(newValue, currentTimeStamp, metaData, hitBucket)
-            #print "waiting for data %i" % len(centroidinp[0])
+            print "waiting for data %i" % len(centroidinp[0])
             return
         else:
-            clusterResult = initial_clustering(centroidinp)
+            datesincerecalculation = currentTimeStamp
+            clusterResult = initial_clustering(currentTimeStamp, centroidinp)
             k = len(clusterResult["means"])
-            info("Results after initial clustering:")
-            info("Cluster:")
+            info(currentTimeStamp, "Results after initial clustering:")
+            info(currentTimeStamp, "Cluster:")
             clustersizes = [len(c) for c in clusterResult['cluster']]
-            info(pformat(clustersizes))
-            info(pformat(clustersizes))
+            info(currentTimeStamp, pformat(clustersizes))
+            info(currentTimeStamp, pformat(clustersizes))
             means = [{'Average Speed': x[0], 'Vehicle Count': x[1]} for x in clusterResult['means']]
-            info("Centroids:")
-            info(pformat(means))
+            info(currentTimeStamp, "Centroids:")
+            info(currentTimeStamp, pformat(means))
             return
     #elif len(clusterDataStore) > recalcsize:
     elif (currentTimeStamp-datesincerecalculation) > timedelta(hours=recalculationtime):
@@ -145,7 +146,7 @@ def callback(ch, method, properties, body):
         for x in clusterDataStore.get():
             for i, v in enumerate(x):
                 centroidinp[i].append(v)
-        info("Recalibrating Centroids...")
+        info(currentTimeStamp, "Recalibrating Centroids...")
         #print "Recalibrating Centroids..."
         clusterResult = recalculated_clustering(centroidinp, k)
         if clusterResult == 0:
@@ -159,14 +160,14 @@ def callback(ch, method, properties, body):
         # info(lastm)
         # info("New Centroids. Last m %i, new m $i" % (lastm, m))
         means = [{'Average Speed': x[0], 'Vehicle Count': x[1]} for x in clusterResult['means']]
-        info(pformat(means))
+        info(currentTimeStamp, pformat(means))
         clustersizes = [len(c) for c in clusterResult['cluster']]
         hitBucket = "n/a"
-        info(pformat(clustersizes))
+        info(currentTimeStamp, pformat(clustersizes))
         writeToCsv(newValue, currentTimeStamp, metaData, hitBucket)
         return
     else:
-        #print "clustering data %i" % len(clusterDataStore)
+        print "clustering data %i" % len(clusterDataStore)
         newValue = [body["data"]["avgSpeed"], body["data"]["vehicleCount"]]
         clusterDataStore.append(newValue)
         metaDataStore.append(metaData)
@@ -174,11 +175,11 @@ def callback(ch, method, properties, body):
         weights = [1 for i in range(features)]
         clusterResult = kmeans_new_value(clusterResult['means'], clusterResult['cluster'], weights, features, newValue)
         means = [{'Average Speed': x[0], 'Vehicle Count': x[1]} for x in clusterResult['means']]
-        info("Centroids at time " + currentTimeStamp.strftime(datetimeFormat))
-        info(pformat(means))
+        info(currentTimeStamp, "Centroids at time " + currentTimeStamp.strftime(datetimeFormat))
+        info(currentTimeStamp, pformat(means))
         clustersizes = [len(c) for c in clusterResult['cluster']]
         hitBucket = clusterResult['hit_bucket']
-        info(pformat(clustersizes))
+        info(currentTimeStamp, pformat(clustersizes))
         writeToCsv(newValue, currentTimeStamp, metaData, hitBucket)
         return
 
@@ -187,8 +188,8 @@ def clusterData(channelname, recalctime):
     # global logger
     channel, queue_name = init(channelname, recalctime)
     channel.exchange_declare(exchange='clustertraffic', type='fanout')
-    info("Started main program, waiting for data...")
-    with open(channelname + 'Data' + datetime.now().strftime("%Y-%m-%d") + '.csv', 'wb') as csvfile:
+    info(startdate, "Started main program, waiting for data...")
+    with open(channelname + 'Data' + startdate.strftime("%Y-%m-%d") + '.csv', 'wb') as csvfile:
         wr = csv.writer(csvfile, delimiter=',', quotechar='\"', quoting=csv.QUOTE_MINIMAL)
         wr.writerow(["Average Speed", "Vehicle Count", "Timestamp", "Street1", "City1", "Latitude1", "Longitude1",
                      "Street2", "City2", "Latitude2", "Longitude2", "Nearest Centroid"])
