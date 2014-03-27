@@ -109,7 +109,12 @@ def callback(ch, method, properties, body):
     body = json.loads(body)
     currentTimeStamp = datetime.strptime(body["data"]["TIMESTAMP"], datetimeFormat)
     report_id = body["data"]["REPORT_ID"]
-    metaData = getMetaData(report_id)
+    while True
+        try:
+            metaData = getMetaData(report_id)
+            break
+        except:
+            print "metaData retrieval timed out, try again"
     if not means:
         #if len(centroidinp[0]) < 30:
         if (currentTimeStamp-startdate) < timedelta(hours=24):
