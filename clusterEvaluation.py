@@ -36,7 +36,7 @@ def distanceToNearestCluster(i, C, o):
 
 
 #TODO: make this efficient by precomputing distance between each point to each cluster and storing in matrix
-def silhoutteCoefficient(C):
+def silhoutteCoefficient(timestamp, C):
     lengths = [float(len(c)) for c in C]
     totalLength = float(sum(lengths))
     s = [float(0) for i in range(len(C))]
@@ -48,9 +48,9 @@ def silhoutteCoefficient(C):
             s[i] += curSil
             total += curSil
         s[i] /= lengths[i]
-    info("Average Silhouette of each Cluster (k = %i): " % (len(C)))
-    info(pformat(s))
-    info("Average Silhouette of entire Dataset: ")
+    info(timestamp, "Average Silhouette of each Cluster (k = %i): " % (len(C)))
+    info(timestamp, pformat(s))
+    info(timestamp, "Average Silhouette of entire Dataset: ")
     sed = total/totalLength
-    info(str(sed))
+    info(timestamp, str(sed))
     return sed
