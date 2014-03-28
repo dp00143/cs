@@ -1,0 +1,14 @@
+Average Silhouette of each Cluster (k = 1): 
+[1.0]
+Average Silhouette of entire Dataset: 
+1.0
+Clustersizes after initial Clustering:
+[[123933]]
+Chosen k = 1
+Results after initial clustering:
+Cluster:
+[123933]
+[123933]
+Centroids:
+[{'Average Speed': 45.393209099561446, 'Vehicle Count': 1.703213432461505}]
+Recalibrating Centroids...
