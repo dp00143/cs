@@ -91,7 +91,7 @@ def initial_clustering(timestamp, inp):
     result = [kmeans(v, kmeansinput, weights, features, len(v)) for v in means]
     pprint(result)
     clustering = [c["cluster"] for c in result if not isinstance(c, float)]
-    silhoutteCoefficients = [silhoutteCoefficient(c1) for c1 in clustering]
+    silhoutteCoefficients = [silhoutteCoefficient(timestamp, c1) for c1 in clustering]
     clustersizes = [[len(c) for c in c1] for c1 in clustering]
     highestSil = -1
     for i, s in enumerate(silhoutteCoefficients):
