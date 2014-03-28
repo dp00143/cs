@@ -65,7 +65,7 @@ def importAllData():
     while startdate<enddate:
         wrapAndSendData((importData(url,resourceValues,startdate)), types, connection)
         startdate += timedelta(minutes=5)
-        sleep(30)
+        sleep(50)
         pprint(startdate)
 
 def getMetaData(reportid):
