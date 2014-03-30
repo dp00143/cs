@@ -25,7 +25,13 @@ def importData(url, resource, date, limit=500,):
     data_string = urllib.quote(json.dumps({'resource_id': resource, 'limit': limit,
                                            # 'filter':{"REPORT_ID":"203822"}}))
                                            'filters':{"TIMESTAMP":date}}))
-    response = urllib2.urlopen(url, data_string)
+    while True:
+        try:
+            response = urllib2.urlopen(url, data_string)
+            break
+        except urllib2.URLError: 
+            print "Failure on url open, try again"
+        
     assert response.code == 200
 
     response_dict = json.loads(response.read())
