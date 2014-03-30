@@ -29,7 +29,7 @@ def importData(url, resource, date, limit=500,):
         try:
             response = urllib2.urlopen(url, data_string)
             break
-        except urllib2.URLError: 
+        except: 
             print "Failure on url open, try again"
         
     assert response.code == 200
