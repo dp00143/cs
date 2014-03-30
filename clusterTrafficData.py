@@ -99,7 +99,7 @@ def initial_clustering(timestamp, inp):
             highestSil = s
             idx = i
     info(timestamp, "Clustersizes after initial Clustering:")
-    info(pformat(timestamp, clustersizes))
+    info(timestamp, pformat(clustersizes))
     info(timestamp, "Chosen k = %i" % len(clustering[idx]))
     pprint(idx)
     return result[idx]
